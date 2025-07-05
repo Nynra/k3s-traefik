@@ -1,0 +1,103 @@
+namespace: traefik
+
+dashboard:
+  enabled: true
+  ingressUrl: "traefik.example.com"
+  externalCert:
+    name: example-com-tls
+    remoteSecretName: "example-com-tls"
+    remoteSecretStore: "certs-vault"
+
+middlewares:
+  enabled: true
+  crowdsecBouncer:
+    enabled: true
+    version: v1.3.3
+    externalSecret:
+      name: crowdsecBouncerToken
+      remoteSecretStore: kubernetes
+      remoteSecretName: crowdsecBouncerToken
+      registrationTokenPropertyName: token
+  localOnlyAllowlist:
+    enabled: true
+    localIpCIDRs:
+      # Can also be restricted to certain subnets
+      - 192.168.0.0/16 # 192.168.x.x
+  rateLimiting:
+    enabled: true
+    average: 100
+    burst: 200
+    period: 1s
+
+# Values for Traefik Helm chart
+traefik:
+  globalArguments:
+      - "--global.sendanonymoususage=false"
+      - "--global.checknewversion=false"
+
+  additionalArguments:
+    - "--serversTransport.insecureSkipVerify=true"
+    - "--log.level=INFO"
+
+    # Add the crowdsec bouncer
+    # - "--entrypoints.web.http.middlewares=traefik-crowdsec-bouncer@kubernetescrd"
+    # - "--entrypoints.websecure.http.middlewares=traefik-crowdsec-bouncer@kubernetescrd"
+
+  deployment:
+    enabled: true
+    replicas: 3
+    annotations: {}
+    podAnnotations: {}
+    additionalContainers: []
+    initContainers: []
+    additionalVolumes:
+      - name: crowdsec-lapi-secret-volume 
+        secret:
+          secretName: crowdsec-bouncer-token
+    additionalVolumeMounts:
+      - name: crowdsec-lapi-secret-volume
+        mountPath: /etc/traefik/secrets/crowdsec-lapi
+        readOnly: true
+
+  ports:
+    web:
+      redirections:
+        entrypoint:
+          to: websecure
+          priority: 10
+    websecure:
+      http3:
+        enabled: true
+      advertisedPort: 443
+      tls:
+        enabled: true
+
+  ingressRoute:
+    dashboard:
+      enabled: false
+
+  providers:
+    kubernetesCRD:
+      enabled: true
+      ingressClass: traefik-external
+      allowExternalNameServices: true
+      namespaces: [] # All namespaces
+    kubernetesIngress:
+      enabled: true
+      allowExternalNameServices: true
+      namespaces: [] # All namespaces
+      publishedService:
+        enabled: false
+
+  rbac:
+    enabled: true
+
+  service:
+    enabled: true
+    type: LoadBalancer
+    annotations: {}
+    labels: {}
+    spec:
+      loadBalancerIP: 192.168.0.50
+    loadBalancerSourceRanges: []
+    externalIPs: []
