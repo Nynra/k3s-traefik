@@ -1,4 +1,4 @@
-{{- if .Values.traefik.dashboard.enabled }}
+{{- if .Values.dashboard.enabled }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
