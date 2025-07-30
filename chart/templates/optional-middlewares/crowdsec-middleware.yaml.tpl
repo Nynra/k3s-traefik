@@ -1,3 +1,4 @@
+{{- if .Values.middlewares.crowdsecBouncer.enabled }}
 apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
@@ -8,3 +9,5 @@ spec:
   plugin:
     crowdsec-bouncer:
       enabled: true
+
+{{- end }}
