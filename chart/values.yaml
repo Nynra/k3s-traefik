@@ -1,30 +1,94 @@
-namespace: traefik
+global: 
+  # Global labels and annotations for all resources in this chart
+  commonLabels: {}
+  commonAnnotations: {}
+
+# Enable the deployment of resources in this chart. If set to false only dependancies will
+# be installed
+enabled: true
+
+namespace:
+  # Enable the creation of the namespace for this chart
+  enabled: true
+  name: traefik
+  # Labels and annotations to add to the namespace manifest
+  commonLabels: {}
+  commonAnnotations: {}
 
 dashboard:
+  # Enable the Traefik dashboard
   enabled: true
+
+  # Annotations and labels to add to the dashboard ingress
+  # Note: The dashboard ingress is only created if the dashboard is enabled
+  commonAnnotations: {}
+  commonLabels: {}
+
+  # The URL to access the dashboard
   ingressUrl: "traefik.example.com"
+
+  # The secret name for the TLS certificate used by the dashboard ingress
+  entrypoint: websecure
+  certName: "example-com-tls"
   externalCert:
-    name: example-com-tls
-    remoteSecretName: "example-com-tls"
-    remoteSecretStore: "certs-vault"
+    # Enable the use of an external secret for the TLS certificate. If set to
+    # false the chart will assume a certificate with the certName is already in the 
+    # namespace
+    enabled: true
+
+    # The name of the secret in the secret store that contains the TLS certificate
+    secretName: "example-com-tls"
+
+    # Name and type of the secret store where the TLS certificate is stored
+    secretStore: "certs-vault"
+    secretStoreType: "ClusterSecretStore"
 
 middlewares:
+  # Enable the non-default middlewares for Traefik
   enabled: true
+
+  # Annotations and labels to add to the middlewares
+  commonAnnotations: {}
+  commonLabels: {}
+
+  # Enable the CrowdSec bouncer middleware
   crowdsecBouncer:
     enabled: true
     version: v1.3.3
+
+    # Name of the secret that contains the CrowdSec bouncer token
+    secretName: crowdsec-bouncer-token
     externalSecret:
-      name: crowdsecBouncerToken
-      remoteSecretStore: kubernetes
-      remoteSecretName: crowdsecBouncerToken
-      registrationTokenPropertyName: token
+      # Enable the use of an external secret for the CrowdSec bouncer token
+      # If set to false the chart will assume a secret with the secretName is already in the namespace
+      enabled: true
+
+      # The name and type of the secret store where the CrowdSec bouncer token is stored
+      secretStore: kubernetes
+      secretStoreType: ClusterSecretStore
+
+      # The name of the secret in the secret store that contains the CrowdSec bouncer token
+      secretName: crowdsecBouncerToken
+
+      # The property in the secret that contains the CrowdSec bouncer token
+      tokenPropertyName: token
+  
+  # Allowlist for local IPs to bypass the CrowdSec bouncer
   localOnlyAllowlist:
+    # Enable the local IP allowlist middleware
     enabled: true
+
+    # Allowed local IP CIDRs
     localIpCIDRs:
       # Can also be restricted to certain subnets
       - 192.168.0.0/16 # 192.168.x.x
+
+  # Rate limiting middleware
   rateLimiting:
+    # Enable the rate limiting middleware
     enabled: true
+
+    # Specify the rate limiting parameters
     average: 100
     burst: 200
     period: 1s
