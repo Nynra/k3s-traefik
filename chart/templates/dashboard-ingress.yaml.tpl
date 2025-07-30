@@ -1,4 +1,4 @@
-{{- .Values.enabled }}{{- if .Values.dashboard.enabled }}
+{{- if .Values.enabled }}{{- if .Values.dashboard.enabled }}
 apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
@@ -33,5 +33,5 @@ spec:
         - name: api@internal
           kind: TraefikService
   tls:
-    secretName: {{ .Values.dashboard.externalCert.name | quote }}
+    secretName: {{ .Values.dashboard.externalCert.secretName | quote }}
 {{- end }}{{- end }}
