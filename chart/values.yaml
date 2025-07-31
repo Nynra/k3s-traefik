@@ -146,6 +146,8 @@ traefik:
       ingressClass: traefik-external
       allowExternalNameServices: true
       namespaces: [] # All namespaces
+      # Might be needed to reference middlewares in other namespaces
+      # allowCrossNamespace: true
     kubernetesIngress:
       enabled: true
       allowExternalNameServices: true
