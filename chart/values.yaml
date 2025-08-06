@@ -130,7 +130,6 @@ traefik:
 
   ports:
     web:
-      port: 8080
       expose:
         default: true
       redirections:
@@ -138,20 +137,13 @@ traefik:
           to: websecure
           priority: 10
     websecure:
-      port: 8443
       expose:
         default: true
-      exposedPort: 443
       http3:
         enabled: true
         advertisedPort: 443
       tls:
         enabled: true
-    metrics:
-      port: 9100 
-      expose:
-        default: false
-      exposedPort: 9100
 
   ingressRoute:
     dashboard:
