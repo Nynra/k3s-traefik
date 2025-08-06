@@ -7,3 +7,4 @@ dependencies:
 - name: traefik
   version: v35.3.0
   repository: https://helm.traefik.io/traefik
+  condition: traefik.deployment.enabled

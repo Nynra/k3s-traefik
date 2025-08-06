@@ -9,19 +9,11 @@ metadata:
     {{- if .Values.global.commonAnnotations }}
     {{- toYaml .Values.global.commonAnnotations | nindent 4 }}
     {{- end }}
-    # Custom annotations
-    {{- if .Values.middlewares.commonAnnotations }}
-    {{- toYaml .Values.middlewares.commonAnnotations | nindent 4 }}
-    {{- end }}
+  {{- if .Values.global.commonLabels }}
   labels:
     # Global labels
-    {{- if .Values.global.commonLabels }}
     {{- toYaml .Values.global.commonLabels | nindent 4 }}
-    {{- end }}
-    # Custom labels
-    {{- if .Values.middlewares.commonLabels }}
-    {{- toYaml .Values.middlewares.commonLabels | nindent 4 }}
-    {{- end }}
+  {{- end }}
 spec:
   ipWhiteList:
     sourceRange:
