@@ -123,10 +123,10 @@ traefik:
         mountPath: /etc/traefik/secrets/crowdsec-lapi
         readOnly: true
 
-  experimental: 
-    # Enable experimental plugins
-    plugins: 
-      enabled: true
+  # experimental: 
+  #   # Enable experimental plugins
+  #   plugins: 
+  #     enabled: true
 
   ports:
     web:
