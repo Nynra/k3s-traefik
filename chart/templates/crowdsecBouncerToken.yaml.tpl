@@ -1,4 +1,4 @@
-{{- if .Values.enabled }}{{- if .Values.middlewares.crowdsecBouncer.enabled }}{{- if .Values.crowdsecCredentials.externalSecret.enabled }}
+{{- if .Values.enabled }}{{- if .Values.middlewares.crowdsecBouncer.enabled }}{{- if .Values.externalSecret.enabled }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
@@ -17,13 +17,13 @@ metadata:
   {{- end }}
 spec:
   secretStoreRef:
-    kind: {{ .Values.crowdsecCredentials.secretStoreType | quote }}
-    name: {{ .Values.crowdsecCredentials.secretStore | quote }}
+    kind: {{ .Values.externalSecret.secretStoreType | quote }}
+    name: {{ .Values.externalSecret.secretStore | quote }}
   target:
     creationPolicy: Owner
   data:
     - secretKey: key
       remoteRef:
-        key: {{ .Values.crowdsecCredentials.secretName | quote }}
-        property: {{ .Values.crowdsecCredentials.properties.bouncerToken | quote }}
+        key: {{ .Values.externalSecret.secretName | quote }}
+        property: {{ .Values.externalSecret.properties.bouncerToken | quote }}
 {{- end }}{{- end }}{{- end }}
