@@ -1,4 +1,3 @@
-{{- if .Values.enabled }}{{- if .Values.namespace.enabled }}
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -13,6 +12,4 @@ metadata:
   labels:
     # Global labels
     {{- toYaml .Values.global.commonLabels | nindent 4 }}
-  {{- end }}
-{{- end }}{{- end }}
-    
+  {{- end }}    
