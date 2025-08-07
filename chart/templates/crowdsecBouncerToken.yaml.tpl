@@ -17,13 +17,13 @@ metadata:
   {{- end }}
 spec:
   secretStoreRef:
-    kind: {{ .Values.externalSecret.secretStoreType | quote }}
-    name: {{ .Values.externalSecret.secretStore | quote }}
+    kind: {{ .Values.crowdsecCredentials.secretStoreType | quote }}
+    name: {{ .Values.crowdsecCredentials.secretStore | quote }}
   target:
     creationPolicy: Owner
   data:
     - secretKey: key
       remoteRef:
-        key: {{ .Values.externalSecret.secretName | quote }}
-        property: {{ .Values.externalSecret.properties.bouncerToken | quote }}
+        key: {{ .Values.crowdsecCredentials.secretName | quote }}
+        property: {{ .Values.crowdsecCredentials.properties.bouncerToken | quote }}
 {{- end }}{{- end }}
